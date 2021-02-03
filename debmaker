@@ -1,0 +1,71 @@
+#!/bin/bash
+echo "Lets's make your .deb package"
+read -p 'Specify name for your package: ' package
+if [ $package != '' ]; then
+mkdir -p /home/$USER/debmaker/$package/DEBIAN
+mkdir -p /home/$USER/debmaker/$package/usr/bin
+echo "Copy your script to: /home/"$USER"/"$package"/usr/bin/"
+read -p 'Pres Enter when you copied it.' boolcopy
+if [ -f /home/$USER/debmaker/$package/usr/bin/*]; then
+  echo "Making executable"
+  chmod 777 /home/$USER/debmaker/$package/usr/bin/*
+  /home/$USER/debmaker/$package/DEBIAN
+  echo " "
+  echo "Now you need to answer some questions about you and about your package:"
+  echo " "
+  read -p "1. Enter your package version (1.0-1): " version
+  read -p "2. Enter category of your package (misc): " categ
+  read -p "2. Enter architecture of your package (amd64 i386 arm): " arch
+  read -p "3. Enter depends (bash): " depends
+  read -p "4. Enter your information like (Man <man@man.man>): " info
+  read -p "5. Enter description of your package" desc
+  read -p "6. If it replaces any of packages, type names of them, else press Enter: " replaces
+  read -p "7. If it has any conflicts, tell them, like (crapscript,png) else, press Enter: " conflicts
+  if [ -z $version ]; then
+    version = "1.0-1"
+  fi
+  if [ -z $categ ]; then
+    categ = "misc"
+  fi
+  if [ -z $arch ]; then
+    arch = "amd64 i386 arm"
+  fi
+  if [ -z $depends ]; then
+    depends = "bash"
+  fi
+  if [ -z $info ]; then
+    info = "Man <man@man.man>"
+  fi
+  echo "Package: "$package>>/home/$USER/debmaker/$package/DEBIAN/control
+  echo "Version: "$version>>/home/$USER/debmaker/$package/DEBIAN/control
+  echo "Section: "$categ>>/home/$USER/debmaker/$package/DEBIAN/control
+  echo "Architecture: "$arch>>/home/$USER/debmaker/$package/DEBIAN/control
+  echo "Depends: "$depends>>/home/$USER/debmaker/$package/DEBIAN/control
+  echo "Maintainer: "$info>>/home/$USER/debmaker/$package/DEBIAN/control
+  echo "Description: "$desc>>/home/$USER/debmaker/$package/DEBIAN/control
+  if [ -n $replaces ]; then
+    echo ""$replaces>>/home/$USER/debmaker/$package/DEBIAN/control
+  fi
+  if [ -n $conflicts ]; then
+    echo ""$conflicts>>/home/$USER/debmaker/$package/DEBIAN/control
+  fi
+  echo "Current file control: "
+  cat /home/$USER/debmaker/$package/DEBIAN/control
+  read -p "Do you have a licanse? [y/n]: " license
+  if [ $license == "y" ]; then
+    echo "Rename it to 'copyright' and copy it to /home/"$USER"/debmaker/"$package"/DEBIAN/copyright"
+  fi
+  read -p "Do you have a preinstall script? [y/n]: " preinstall
+  if [ $preinstall == "y" ]; then
+    echo "Rename it to 'preinst' and put it to /home/"$USER"/debmaker/"$package"/DEBIAN/preinst"
+  fi
+  read -p "If you are ready to build, then press Enter: " building
+  if [ -z $building ]; then
+    currentdire = `pwd`
+    cd /home/$USER/debmaker/
+    fakeroot dpkg-deb --build $package
+    mv $package.deb $package"_"$version"_all.deb"
+    echo "Your package is called: "$package"_"$version"_all.deb"
+    fi
+  fi
+fi

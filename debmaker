@@ -4,7 +4,7 @@ read -p 'Specify name for your package: ' package
 if [ -n $package ]; then
 mkdir -p /home/$USER/debmaker/$package/DEBIAN
 mkdir -p /home/$USER/debmaker/$package/usr/bin
-echo "Copy your script to: /home/"$USER"/"$package"/usr/bin/"
+echo "Copy your script to: /home/"$USER"/debmaker/"$package"/usr/bin/"
 read -p 'Pres Enter when you copied it.' boolcopy
 if [ -f /home/$USER/debmaker/$package/usr/bin/* ]; then
   echo "Making executable"

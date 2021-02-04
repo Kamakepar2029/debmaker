@@ -1,0 +1,7 @@
+Package: debmaker
+Version: 1.0-3
+Section: misc
+Architecture: all
+Depends: bash,dpkg,debconf,debhelper,lintian
+Maintainer: Kama Kepar <support@kamakepar.ru>
+Description: Debmaker is a script to make .deb files
